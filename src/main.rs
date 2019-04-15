@@ -1,7 +1,19 @@
 extern crate clap;
-
-use std::net::TcpListener;
+use std::collections::HashMap;
+use std::io::prelude::{ Read, Write };
+use std::net::{ TcpListener, TcpStream };
 use clap::{App, ArgMatches, Arg};
+
+fn handle_stream (mut stream: TcpStream) {
+    let mut buffer = [0; 512];
+    if stream.read(&mut buffer).is_err() {
+        println!("can't read stream" );
+        return
+    }
+    println!("Request : {} ", String::from_utf8_lossy(&buffer[..]));
+}
+
+
 
 fn get_port<'a>() -> u32 {
     let matches = App::new("web-server-rs")
@@ -30,6 +42,6 @@ fn main () {
     let listener = TcpListener::bind(format!("127.0.0.1:{}", port_number)).unwrap();
     for stream in listener.incoming() {
         let stream = stream.unwrap();
-        println! ("Connection established")
+        handle_stream(stream);
     }
 }
