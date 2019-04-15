@@ -1,7 +1,6 @@
 extern crate clap;
 
 use std::net::TcpListener;
-
 use clap::{App, ArgMatches, Arg};
 
 fn get_port<'a>() -> u32 {
@@ -28,5 +27,9 @@ fn get_port<'a>() -> u32 {
 
 fn main () {
     let port_number = get_port();
-    
+    let listener = TcpListener::bind(format!("127.0.0.1:{}", port_number)).unwrap();
+    for stream in listener.incoming() {
+        let stream = stream.unwrap();
+        println! ("Connection established")
+    }
 }
